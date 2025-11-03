@@ -3,8 +3,8 @@ name: cd: publish image to GHCR
 on:
   push:
     tags:
-      - 'v*'            # pushes when you push tags like v0.1.3
-  workflow_dispatch:     # allow manual run
+      - 'v*'            # läuft bei Tags wie v0.1.4
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -13,6 +13,7 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,14 +28,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # (Optional but nice) shorten image name and tag
+      # GHCR will nur KLEINBUCHSTABEN im Bildnamen
       - name: Prepare tags
         id: prep
         run: |
           echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
-          # Tag 1: the semver tag itself (e.g., v0.1.3)
           echo "TAG1=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
-          # Tag 2: latest
           echo "TAG2=latest" >> $GITHUB_OUTPUT
 
       - name: Build and push
@@ -45,5 +44,4 @@ jobs:
           tags: |
             ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG1 }}
             ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG2 }}
-          # this avoids occasional attest/provenance hiccups on some accounts
           provenance: false
