@@ -65,13 +65,13 @@ Beispiele aus der explorativen Analyse (Pandas/SQL):
 Einige Beispiel-Grafiken aus der explorativen Analyse:
 
 ### 1. Top 10 Bundesländer – Anzahl öffentlicher Ladeeinrichtungen
-![Top 10 Bundesländer](output/ladepunkte_pro_bundesland_top10.png)
+![Top 10 Bundesländer](./output/ladepunkte_pro_bundesland_top10.png)
 
 ### 2. Inbetriebnahmen pro Jahr
-![Inbetriebnahmen pro Jahr](output/inbetriebnahmen_pro_jahr.png)
+![Inbetriebnahmen pro Jahr](./output/inbetriebnahmen_pro_jahr.png)
 
 ### 3. Geografische Verteilung (Stichprobe n=5000)
-![Verteilung Deutschland](output/ladepunkte_scatter_map_sample.png)
+![Verteilung Deutschland](./output/ladepunkte_scatter_map_sample.png)
 
 ---
 
