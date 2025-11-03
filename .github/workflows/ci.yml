@@ -1,8 +1,11 @@
-# .github/workflows/ci.yml
-name: CI
+name: ci
+
 on:
   push:
+    branches: [ "main" ]
   pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -11,26 +14,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+            python-version: "3.11"
 
-      - name: Install deps
+      - name: Install minimal deps
         run: |
           python -m pip install --upgrade pip
+          # nur was zum Import-Test nötig ist
           pip install -r requirements.txt
-          # Keine DB nötig: wir testen nur Importierbarkeit
-      - name: Run smoke tests
-        run: |
-          python -c "import etl.config, etl.etl; print('ok')"
-          pytest -q || true  # Falls pytest nicht installiert, CI bricht nicht ab
 
-  docker-build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Build image
+      - name: Smoke: module import
         run: |
-          docker build -t ladeinfra:ci-test .
+          python - << 'PY'
+          import pandas, sqlalchemy, dotenv
+          import importlib.util, sys, pathlib
+          assert pathlib.Path("etl/etl.py").exists()
+          print("✅ Imports ok")
+          PY

@@ -3,22 +3,21 @@ name: cd: publish image to GHCR
 on:
   push:
     tags:
-      - 'v*'            # läuft bei Tags wie v0.1.4
+      - 'v*'     # z.B. v0.1.0
   workflow_dispatch:
 
 permissions:
   contents: read
-  packages: write
+  packages: write   # Wichtig für GHCR
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Login to GHCR
@@ -28,20 +27,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # GHCR will nur KLEINBUCHSTABEN im Bildnamen
-      - name: Prepare tags
-        id: prep
-        run: |
-          echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
-          echo "TAG1=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
-          echo "TAG2=latest" >> $GITHUB_OUTPUT
+      - name: Extract Docker metadata (tags & labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest
 
-      - name: Build and push
+      - name: Build and push image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: |
-            ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG1 }}
-            ${{ steps.prep.outputs.IMAGE }}:${{ steps.prep.outputs.TAG2 }}
-          provenance: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
