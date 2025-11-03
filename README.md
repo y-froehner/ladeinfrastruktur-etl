@@ -7,14 +7,15 @@ Dieses Projekt demonstriert eine vollständige Mini-Data-Engineering-Architektur
 ---
 
 ## Inhaltsverzeichnis
-1. [Features](#features)  
-2. [Architekturüberblick](#architekturüberblick)  
-3. [Datenbereinigung & Insights](#datenbereinigung--insights)  
-4. [Schnellstart](#schnellstart)  
-5. [Projektstruktur](#projektstruktur)  
-6. [Nützliche-SQL-Queries](#nützliche-sql-queries)  
-7. [CI-Pipeline](#ci-pipeline)  
-8. [Autor](#autor)
+1. [Features](#features)
+2. [Architekturüberblick](#architekturüberblick)
+3. [Datenbereinigung & Insights](#datenbereinigung--insights)
+4. [Visualisierungen](#visualisierungen)
+5. [Schnellstart](#schnellstart)
+6. [Projektstruktur](#projektstruktur)
+7. [Nützliche SQL-Queries](#nützliche-sql-queries)
+8. [CI-Pipeline](#ci-pipeline)
+9. [Autor](#autor)
 
 ---
 
@@ -22,47 +23,55 @@ Dieses Projekt demonstriert eine vollständige Mini-Data-Engineering-Architektur
 - ETL mit Python und Pandas zur Bereinigung, Transformation und Standardisierung von Rohdaten  
 - PostgreSQL + Adminer als Datenbank- und UI-Schicht über Docker Compose  
 - Automatische Qualitätschecks für fehlende Werte, Typvalidierung und Ausreißer-Erkennung  
-- CI-Integration über GitHub Actions (Smoke Tests und Linting)  
+- CI-Integration über GitHub Actions (Tests + Smoke-Test bei jedem Push)  
 - Reproduzierbare Umgebung durch Containerisierung mit Docker
 
 ---
 
 ## Architekturüberblick
 
-**ETL- & Datenfluss**
-
 CSV (BNetzA)  
 ↓  
 Pandas (Cleaning & Transformation)  
 ↓  
-PostgreSQL (Tabelle `ladepunkte`)  
+PostgreSQL (Tabelle ladepunkte)  
 ↓  
 SQL-Queries und Analysen  
 ↑  
-Git push (Branch `main`)  
-↓  
-GitHub Actions (CI: Linting, Smoke Tests, ETL-Check)
-
-**Beschreibung:**  
-Diese Darstellung kombiniert den fachlichen Datenfluss und den technischen Entwicklungszyklus.  
-Jeder Push in den `main`-Branch löst automatisch eine CI-Pipeline aus, die sicherstellt, dass der Code lauffähig ist und der ETL-Prozess erfolgreich durchläuft.
+Git Push → GitHub Actions (CI: Tests & Smoke)
 
 ---
 
 ## Datenbereinigung & Insights
 
-**Bereinigungsschritte im ETL-Skript:**
-- Vereinheitlichung von Spaltennamen (`Bundesland`, `Betreiber`, `Steckertyp`)  
-- Entfernung von Duplikaten und fehlerhaften Zeilen  
-- Typkonvertierung (Datum, numerische Werte, Koordinaten)  
-- Ersetzung inkonsistenter Werte (`None`, `n/a`, `-`)  
+Die Bereinigungsschritte im ETL-Skript umfassen:
+- Vereinheitlichung von Spaltennamen (z. B. `Bundesland`, `Betreiber`, `Steckertyp`)
+- Entfernung von Duplikaten (mehrfache Ladesäulen-Einträge)
+- Typkonvertierung (Datum, numerische Werte, Koordinaten)
+- Entfernung leerer oder fehlerhafter Zeilen
+- Ersetzung inkonsistenter Werte (z. B. `None`, `n/a`, `-`)
 - Berechnung neuer Felder (z. B. Installationsjahr, Leistungskategorie)
 
-**Beobachtungen aus der Analyse:**
-- Rund **100.000 Ladepunkte** in der aktuellen CSV-Version  
-- **NRW, Bayern und Baden-Württemberg** stellen etwa 50 % aller Ladesäulen  
-- Starkes Wachstum seit 2020, besonders bei **Schnellladern (DC)**  
-- Häufige Datenprobleme: unvollständige Adressen und fehlende Postleitzahlen  
+Beispiele aus der explorativen Analyse (Pandas/SQL):
+- Rund **100.000 Ladepunkte** bundesweit in der letzten CSV-Version
+- **NRW, Bayern, Baden-Württemberg** = ~50 % aller Ladesäulen
+- Deutliches Wachstum seit 2020, vor allem bei **Schnellladern (DC)**
+- Typische Qualitätsprobleme: unvollständige Adressfelder, fehlende Postleitzahlen
+
+---
+
+## Visualisierungen
+
+Einige Beispiel-Grafiken aus der explorativen Analyse:
+
+### 1. Top 10 Bundesländer – Anzahl öffentlicher Ladeeinrichtungen
+![Top 10 Bundesländer](output/ladepunkte_pro_bundesland_top10.png)
+
+### 2. Inbetriebnahmen pro Jahr
+![Inbetriebnahmen pro Jahr](output/inbetriebnahmen_pro_jahr.png)
+
+### 3. Geografische Verteilung (Stichprobe n=5000)
+![Verteilung Deutschland](output/ladepunkte_scatter_map_sample.png)
 
 ---
 
@@ -89,7 +98,7 @@ etl/         - ETL-Skripte (etl.py, load_to_db.py, config.py)
 data/        - CSV-Dateien (raw + cleaned)
 sql/         - Beispiel-Queries und Materialized Views
 output/      - Diagramme oder Analyseergebnisse
-.github/     - CI-Workflows (GitHub Actions)
+.github/     - CI-Workflow (GitHub Actions)
 ```
 
 ---
@@ -103,25 +112,17 @@ CREATE INDEX IF NOT EXISTS idx_ladepunkte_bundesland
 ON ladepunkte ("Bundesland");
 ```
 
-**Häufiger Fehler:**  
-Falls Materialized Views existieren, müssen sie vor einem erneuten Laden der Tabelle entfernt werden:  
-```sql
-DROP MATERIALIZED VIEW IF EXISTS mv_neu_pro_monat_bundesland CASCADE;
-```
+**Häufige Fehler:**  
+Wenn du die Tabelle neu laden willst, aber Materialized Views existieren, kann es nötig sein, vorher `DROP MATERIALIZED VIEW ... CASCADE;` auszuführen.
 
 ---
 
 ## CI-Pipeline
 
-Jeder Push oder Pull Request auf `main` triggert automatisch den Workflow  
-`.github/workflows/ci.yml`, der folgende Schritte durchführt:
-
-1. Repository auschecken  
-2. Python-Umgebung (3.11) einrichten  
-3. Dependencies installieren  
-4. Smoke-Test des ETL-Skripts ausführen  
-
-Dieser Prozess stellt sicher, dass das Projekt stabil, reproduzierbar und jederzeit lauffähig bleibt.
+Jeder Push triggert automatisch eine Pipeline unter `.github/workflows/ci.yml`, die prüft:
+- ob der Code fehlerfrei importierbar ist
+- ob alle Dependencies installiert werden können
+- ob das ETL-Skript erfolgreich ausgeführt werden kann
 
 ---
 
