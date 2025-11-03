@@ -60,17 +60,20 @@ Beispiele aus der explorativen Analyse (Pandas/SQL):
 
 ---
 
-## Visualisierungen
+## 📊 Visualisierungen
 
 Einige Beispiel-Grafiken aus der explorativen Analyse:
 
 ### 1. Top 10 Bundesländer – Anzahl öffentlicher Ladeeinrichtungen
+Visualisiert die Bundesländer mit den meisten Ladepunkten.  
 ![Top 10 Bundesländer](./output/ladepunkte_pro_bundesland_top10.png)
 
 ### 2. Inbetriebnahmen pro Jahr
+Zeigt den Trend des Wachstums öffentlicher Ladeinfrastruktur über die letzten Jahrzehnte.  
 ![Inbetriebnahmen pro Jahr](./output/inbetriebnahmen_pro_jahr.png)
 
 ### 3. Geografische Verteilung (Stichprobe n=5000)
+Scatterplot der Ladepunkte in Deutschland basierend auf Breiten- und Längengrad.  
 ![Verteilung Deutschland](./output/ladepunkte_scatter_map_sample.png)
 
 ---
