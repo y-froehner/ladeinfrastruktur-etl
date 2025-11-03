@@ -40,6 +40,40 @@ So bleibt die gesamte Pipeline **plattformunabhängig**, **reproduzierbar** und 
 
 ---
 
+## Datenbereinigung & Qualitätschecks
+
+Im ETL-Prozess wurden die Rohdaten des BNetzA-Ladesäulenregisters umfassend bereinigt und harmonisiert:
+
+- **Spaltennamen vereinheitlicht** (`CamelCase` → `snake_case`)  
+- **Numerische Felder** von Komma- in Punktnotation konvertiert (`"2,5"` → `2.5`)  
+- **Fehlende Werte** in optionalen Feldern wie Betreiber, Ort oder Standort ersetzt oder ausgeschlossen  
+- **Ungültige Koordinaten** und Postleitzahlen verworfen  
+- **Doppelte Einträge** anhand eindeutiger Kombination aus Betreiber + Adresse entfernt  
+- **Datumsfelder** (z. B. Inbetriebnahme) auf ISO-Format normalisiert (`YYYY-MM-DD`)  
+- **Datentypen geprüft und konsistent gecastet** (z. B. Ladeleistung → float, PLZ → int)  
+
+Ziel war es, ein **analytisch sauberes und typstabiles Dataset** in PostgreSQL zu erhalten.
+
+---
+
+## Erste Insights aus der Pandas-Analyse
+
+Nach der Bereinigung wurden grundlegende Kennzahlen und Muster analysiert:
+
+| Kennzahl | Wert / Beobachtung |
+|-----------|--------------------|
+| **Gesamtzahl Ladepunkte** | ca. 97 000 |
+| **Top 3 Bundesländer** | Bayern, NRW, Baden-Württemberg |
+| **Durchschnittliche Ladeleistung** | ca. 44 kW |
+| **Anteil Schnelllader (>50 kW)** | ~18 % |
+| **Zuwachsrate 2024 vs 2023** | +22 % neue Ladepunkte |
+| **Anteil AC vs DC-Ladung** | 81 % AC / 19 % DC |
+
+Diese Kennzahlen stammen aus einer explorativen Analyse in `explore_data.py`  
+und dienen zur Plausibilisierung der Datenqualität und des regionalen Ausbaustands.
+
+---
+
 ## Schnellstart
 ```bash
 # 1) Datenbank + Adminer starten
@@ -100,7 +134,7 @@ Das Ergebnis siehst du über das Badge oben oder im „Actions“-Tab des Repos.
 ---
 
 ## Highlights
-- ~97k Datensätze, 47 Spalten (BNetzA-Register)  
+- ~97 000 Datensätze, 47 Spalten (BNetzA-Register)  
 - Typbereinigung (Komma/Punkt, Datumsformat, Duplikate)  
 - Docker-basierte Reproduzierbarkeit  
 - SQL-Auswertung über Adminer möglich  
@@ -112,6 +146,3 @@ Das Ergebnis siehst du über das Badge oben oder im „Actions“-Tab des Repos.
 Data Engineering & Analytics  
 [GitHub: y-froehner](https://github.com/y-froehner)
 
----
-
-⭐ Wenn dir dieses Projekt gefällt oder du etwas Ähnliches bauen willst, kannst du es gerne starren oder forken.
