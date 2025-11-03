@@ -1,9 +1,8 @@
 # Ladeinfrastruktur ETL (BNetzA)
 [![CI](https://github.com/y-froehner/ladeinfrastruktur-etl/actions/workflows/ci.yml/badge.svg)](https://github.com/y-froehner/ladeinfrastruktur-etl/actions/workflows/ci.yml)
-[![Publish](https://github.com/y-froehner/ladeinfrastruktur-etl/actions/workflows/publish.yml/badge.svg)](https://github.com/y-froehner/ladeinfrastruktur-etl/actions/workflows/publish.yml)
 
 ETL-Pipeline für das BNetzA-Ladesäulenregister.  
-Dieses Projekt demonstriert eine vollständige Mini-Data-Engineering-Architektur – von der CSV-Datei bis zur PostgreSQL-Datenbank mit Docker, Adminer und einer automatisierten CI/CD-Pipeline über GitHub Actions.
+Dieses Projekt demonstriert eine vollständige Mini-Data-Engineering-Architektur – von der CSV-Datei bis zur PostgreSQL-Datenbank mit Docker und einer automatisierten CI-Pipeline über GitHub Actions.
 
 ---
 
@@ -11,7 +10,7 @@ Dieses Projekt demonstriert eine vollständige Mini-Data-Engineering-Architektur
 - ETL mit Python und Pandas zur Bereinigung, Transformation und Standardisierung von Rohdaten  
 - PostgreSQL + Adminer als Datenbank- und UI-Schicht über Docker Compose  
 - Automatische Qualitätschecks für fehlende Werte, Typvalidierung und Ausreißer-Erkennung  
-- CI/CD-Integration über GitHub Actions (Tests + automatischer Docker-Build & Push nach GHCR)  
+- CI-Integration über GitHub Actions (Smoke Tests & Build Checks)  
 - Reproduzierbare Umgebung durch Containerisierung mit Docker
 
 ---
@@ -25,8 +24,6 @@ Pandas (Cleaning & Transformation)
 PostgreSQL (Tabelle ladepunkte)  
 ↓  
 SQL-Queries und Analysen  
-↓  
-Deployment des ETL-Containers über GitHub Actions → GHCR
 
 ---
 
@@ -71,7 +68,7 @@ etl/         - ETL-Skripte (etl.py, load_to_db.py, config.py)
 data/        - CSV-Dateien (raw + cleaned)
 sql/         - Beispiel-Queries und Materialized Views
 output/      - Diagramme oder Analyseergebnisse
-.github/     - CI- und CD-Workflows (GitHub Actions)
+.github/     - CI-Workflows (GitHub Actions)
 ```
 
 ---
@@ -90,17 +87,13 @@ Wenn du die Tabelle neu laden willst, aber Materialized Views existieren, kann e
 
 ---
 
-## CI/CD
+## CI-Pipeline
 
 ### Continuous Integration (CI)
 Jeder Push triggert automatisch eine Pipeline unter `.github/workflows/ci.yml`, die prüft:
 - ob der Code fehlerfrei importierbar ist
 - ob alle Dependencies installiert werden können
 - ob das ETL-Skript erfolgreich ausgeführt werden kann
-
-### Continuous Delivery (CD)
-Der Workflow `.github/workflows/publish.yml` erstellt automatisch ein Docker-Image des ETL-Prozesses und pusht es in den GitHub Container Registry (GHCR).  
-Dadurch kann das Projekt auf jedem Rechner mit `docker pull ghcr.io/y-froehner/ladeinfrastruktur-etl:latest` gestartet werden.
 
 ---
 
@@ -109,4 +102,3 @@ Dadurch kann das Projekt auf jedem Rechner mit `docker pull ghcr.io/y-froehner/l
 **Yannis Fröhner**  
 Data Engineering & Analytics  
 GitHub: [y-froehner](https://github.com/y-froehner)
-
