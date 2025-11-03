@@ -10,11 +10,11 @@ Dieses Projekt demonstriert eine vollständige Mini-Data-Engineering-Architektur
 1. [Features](#features)
 2. [Architekturüberblick](#architekturüberblick)
 3. [Datenbereinigung & Insights](#datenbereinigung--insights)
-4. [Visualisierungen](#visualisierungen)
-5. [Schnellstart](#schnellstart)
-6. [Projektstruktur](#projektstruktur)
-7. [Nützliche SQL-Queries](#nützliche-sql-queries)
-8. [CI-Pipeline](#ci-pipeline)
+4. [Schnellstart](#schnellstart)
+5. [Projektstruktur](#projektstruktur)
+6. [Nützliche SQL-Queries](#nützliche-sql-queries)
+7. [CI-Pipeline](#ci-pipeline)
+8. [Beispiel-Visualisierungen](#beispiel-visualisierungen)
 9. [Autor](#autor)
 
 ---
@@ -57,24 +57,6 @@ Beispiele aus der explorativen Analyse (Pandas/SQL):
 - **NRW, Bayern, Baden-Württemberg** = ~50 % aller Ladesäulen
 - Deutliches Wachstum seit 2020, vor allem bei **Schnellladern (DC)**
 - Typische Qualitätsprobleme: unvollständige Adressfelder, fehlende Postleitzahlen
-
----
-
-## 📊 Visualisierungen
-
-Einige Beispiel-Grafiken aus der explorativen Analyse:
-
-### 1. Top 10 Bundesländer – Anzahl öffentlicher Ladeeinrichtungen
-Visualisiert die Bundesländer mit den meisten Ladepunkten.  
-![Top 10 Bundesländer](./output/ladepunkte_pro_bundesland_top10.png)
-
-### 2. Inbetriebnahmen pro Jahr
-Zeigt den Trend des Wachstums öffentlicher Ladeinfrastruktur über die letzten Jahrzehnte.  
-![Inbetriebnahmen pro Jahr](./output/inbetriebnahmen_pro_jahr.png)
-
-### 3. Geografische Verteilung (Stichprobe n=5000)
-Scatterplot der Ladepunkte in Deutschland basierend auf Breiten- und Längengrad.  
-![Verteilung Deutschland](./output/ladepunkte_scatter_map_sample.png)
 
 ---
 
@@ -126,6 +108,22 @@ Jeder Push triggert automatisch eine Pipeline unter `.github/workflows/ci.yml`, 
 - ob der Code fehlerfrei importierbar ist
 - ob alle Dependencies installiert werden können
 - ob das ETL-Skript erfolgreich ausgeführt werden kann
+
+---
+
+## Beispiel-Visualisierungen
+
+### 1. Top 10 Bundesländer – Anzahl öffentlicher Ladeeinrichtungen
+Visualisiert die Bundesländer mit den meisten Ladepunkten.  
+![Top 10 Bundesländer](./output/ladepunkte_pro_bundesland_top10.png)
+
+### 2. Inbetriebnahmen pro Jahr
+Zeigt den jährlichen Zuwachs an Ladepunkten über die letzten Jahrzehnte.  
+![Inbetriebnahmen pro Jahr](./output/inbetriebnahmen_pro_jahr.png)
+
+### 3. Geografische Verteilung (Stichprobe n=5000)
+Scatterplot der Ladepunkte in Deutschland basierend auf Breiten- und Längengrad.  
+![Verteilung Deutschland](./output/ladepunkte_scatter_map_sample.png)
 
 ---
 
