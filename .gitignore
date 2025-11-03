@@ -1,8 +1,36 @@
-.venv
-__pycache__
-output
-tests
-.git
-.gitignore
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# --- Virtual Environment ---
+.venv/
+env/
+venv/
+
+# --- System ---
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
 *.log
-data/*.DS_Store
+
+# --- Data files ---
+data/*
+!data/.gitkeep  # Struktur beibehalten, aber große CSVs auslassen
+
+# --- Output ---
+output/*
+!output/.gitkeep
+!output/*.png    # <- PNG-Bilder behalten (für README)
+
+# --- Git / Docker ---
+.git/
+.gitignore
+.dockerignore
+
+# --- Editor ---
+.vscode/
+.idea/
