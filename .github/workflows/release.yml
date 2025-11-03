@@ -1,14 +1,16 @@
 name: cd: publish image to GHCR
 
 on:
+  # Tag-Push triggert Release, z. B. v0.1.0
   push:
     tags:
-      - 'v*'       # v0.1.2, v1.0.0, etc.
+      - 'v*'
+  # optional: manueller Start im Actions-Tab
+  workflow_dispatch:
 
-# WICHTIG: Schreibrechte für Packages
 permissions:
   contents: read
-  packages: write
+  packages: write   # <— ohne das kann GHCR nicht gepusht werden
 
 jobs:
   build-and-push:
@@ -28,13 +30,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-          labels: |
-            org.opencontainers.image.source=${{ github.repositoryUrl }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
