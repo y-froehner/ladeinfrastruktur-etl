@@ -1,0 +1,13 @@
+# Ordner, die NICHT ins Image sollen
+.venv
+__pycache__
+output
+tests
+.git
+.gitignore
+*.log
+
+# große Daten
+data/*
+!data/Ladesaeulenregister_BNetzA_2025-10-23.csv
+!data/processed_ladesaeulen.csv

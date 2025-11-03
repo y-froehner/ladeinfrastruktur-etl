@@ -1,0 +1,23 @@
+# venv / Python Cache
+.venv/
+__pycache__/
+*.pyc
+
+# Env & lokale Konfig
+.env
+*.env
+
+# OS / Editor
+.DS_Store
+.vscode/
+
+# Daten (nur Beispiel – lasse kleine Beispiel-CSV drin, große Originale raus)
+data/*.csv
+!data/processed_ladesaeulen.csv   # diese kleine Output-Datei darf bleiben, wenn gewünscht
+
+# Build/Output
+output/*
+!output/.gitkeep
+
+# Docker
+*.log
