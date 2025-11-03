@@ -3,8 +3,8 @@ name: cd: publish image to GHCR
 on:
   push:
     tags:
-      - 'v*'        # triggert bei Tags wie v0.1.0, v1.2.3
-  workflow_dispatch:  # manueller Start im Actions-Tab
+      - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -13,7 +13,6 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
