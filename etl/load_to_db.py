@@ -4,8 +4,8 @@ from sqlalchemy import create_engine, text
 from etl.config import PROCESSED_CSV, SQLALCHEMY_URL
 
 def load_dataframe_to_postgres():
-    print("🚀 load_to_db", flush=True)
-    print("📄 Lese CSV:", PROCESSED_CSV, flush=True)
+    print("load_to_db", flush=True)
+    print("Lese CSV:", PROCESSED_CSV, flush=True)
 
     df = pd.read_csv(PROCESSED_CSV, low_memory=False)
 
@@ -33,11 +33,11 @@ def load_dataframe_to_postgres():
     engine = create_engine(SQLALCHEMY_URL, pool_pre_ping=True)
     base_table = "ladepunkte"
 
-    print("🔧 Schreibe Staging-Tabelle …", flush=True)
+    print("Schreibe Staging-Tabelle …", flush=True)
     df.to_sql("_ladepunkte_staging", engine, if_exists="replace", index=False, method="multi", chunksize=5000)
 
     with engine.begin() as conn:
-        print("🔁 Swappe Staging → produktiv …", flush=True)
+        print("Swappe Staging → produktiv …", flush=True)
         # produktiv ersetzen
         conn.execute(text(f'DROP TABLE IF EXISTS {base_table} CASCADE'))
         conn.execute(text(f'ALTER TABLE "_ladepunkte_staging" RENAME TO {base_table}'))
@@ -52,7 +52,7 @@ def load_dataframe_to_postgres():
             conn.execute(text(f'CREATE INDEX IF NOT EXISTS idx_{base_table}_laenge ON {base_table} ("Längengrad")'))
 
         # Materialized View neu aufbauen (immer gültiges Schema)
-        print("🏗️  Rebuild Materialized View …", flush=True)
+        print("Rebuild Materialized View …", flush=True)
         conn.execute(text('DROP MATERIALIZED VIEW IF EXISTS mv_neu_pro_monat_bundesland'))
         conn.execute(text("""
             CREATE MATERIALIZED VIEW mv_neu_pro_monat_bundesland AS
@@ -67,7 +67,7 @@ def load_dataframe_to_postgres():
         conn.execute(text('CREATE INDEX IF NOT EXISTS idx_mv_monat ON mv_neu_pro_monat_bundesland (monat)'))
         conn.execute(text('CREATE INDEX IF NOT EXISTS idx_mv_bundesland ON mv_neu_pro_monat_bundesland ("Bundesland")'))
 
-    print(f"✅ {len(df):,} Zeilen geladen & Views aktualisiert.", flush=True)
+    print(f"{len(df):,} Zeilen geladen & Views aktualisiert.", flush=True)
 
 if __name__ == "__main__":
     load_dataframe_to_postgres()
