@@ -32,17 +32,17 @@ print(df.columns.tolist())
 print("\nErste 5 Zeilen:")
 print(df.head())
 
-print("\n✅ Datei wurde erfolgreich geladen!")
+print("\n Datei wurde erfolgreich geladen!")
 
 
 
 # -------------------------------------
-# 1️⃣ Datentypen prüfen
+# 1. Datentypen prüfen
 print("\nDatentypen:")
 print(df.dtypes.head(10))
 
 # -------------------------------------
-# 2️⃣ Dezimal-Kommas bereinigen (für kW-Spalten)
+# 2. Dezimal-Kommas bereinigen (für kW-Spalten)
 for col in df.columns:
     if "kW" in str(col) or "Leistung" in str(col):
         df[col] = (df[col].astype(str)
@@ -51,12 +51,12 @@ for col in df.columns:
                            .astype(float))
 
 # -------------------------------------
-# 3️⃣ Datum umwandeln
+# 3. Datum umwandeln
 if "Inbetriebnahmedatum" in df.columns:
     df["Inbetriebnahmedatum"] = pd.to_datetime(df["Inbetriebnahmedatum"], dayfirst=True, errors="coerce")
 
 # -------------------------------------
-# 4️⃣ Beispielauswertungen
+# 4. Beispielauswertungen
 
 # A) Anzahl Ladeeinrichtungen pro Bundesland
 if "Bundesland" in df.columns:
@@ -75,17 +75,17 @@ if {"Breitengrad","Längengrad"}.issubset(df.columns):
     print(df[["Breitengrad","Längengrad"]].head(3))
 
 # -------------------------------------
-# 5️⃣ Bereinigte Version speichern
+# 5. Bereinigte Version speichern
 df.to_csv("data/processed_ladesaeulen.csv", index=False)
-print("\n💾 Gespeichert als: data/processed_ladesaeulen.csv")
+print("\n Gespeichert als: data/processed_ladesaeulen.csv")
 
 
 
 
-print("\n✅ Datei wurde erfolgreich geladen!")
+print("\n Datei wurde erfolgreich geladen!")
 
 # -------------------------------------
-# 🔍 Visualisierungen
+# Visualisierungen
 import os
 os.makedirs("output", exist_ok=True)
 
@@ -105,9 +105,9 @@ if "Bundesland" in df.columns:
     plt.savefig("output/ladepunkte_pro_bundesland_top10.png", dpi=150)
     plt.show()
 
-    print("📈 Gespeichert: output/ladepunkte_pro_bundesland_top10.png")
+    print("Gespeichert: output/ladepunkte_pro_bundesland_top10.png")
 else:
-    print("⚠️ Spalte 'Bundesland' nicht gefunden.")
+    print("Spalte 'Bundesland' nicht gefunden.")
 
 
 
@@ -146,11 +146,11 @@ if {lat_col, lon_col}.issubset(df.columns):
         plt.savefig("output/ladepunkte_scatter_map_sample.png", dpi=150)
         plt.show()
 
-        print("🗺️ Gespeichert: output/ladepunkte_scatter_map_sample.png")
+        print("Gespeichert: output/ladepunkte_scatter_map_sample.png")
     else:
-        print("⚠️ Keine gültigen Koordinaten nach Bereinigung gefunden.")
+        print("Keine gültigen Koordinaten nach Bereinigung gefunden.")
 else:
-    print("⚠️ Koordinatenspalten nicht gefunden.")
+    print("Koordinatenspalten nicht gefunden.")
 
 
 
@@ -170,4 +170,4 @@ if "Inbetriebnahmedatum" in df.columns:
         plt.tight_layout()
         plt.savefig("output/inbetriebnahmen_pro_jahr.png", dpi=150)
         plt.show()
-        print("📅 Gespeichert: output/inbetriebnahmen_pro_jahr.png")
+        print("Gespeichert: output/inbetriebnahmen_pro_jahr.png")
