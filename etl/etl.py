@@ -62,7 +62,7 @@ def basic_clean(df: pd.DataFrame) -> pd.DataFrame:
 
 def quality_checks(df: pd.DataFrame) -> dict:
     """
-    Kleine Qualitäts-Kennzahlen, damit du im Gespräch was zeigen kannst.
+    Kleine Qualitäts-Kennzahlen.
     """
     return {
         "rows": len(df),
@@ -85,7 +85,7 @@ def save_artifacts(df: pd.DataFrame):
     """
     os.makedirs("data", exist_ok=True)
     df.to_csv("data/processed_ladesaeulen.csv", index=False)
-    print("💾 Saved: data/processed_ladesaeulen.csv")
+    print("Saved: data/processed_ladesaeulen.csv")
 
     if "Bundesland" in df.columns:
         import matplotlib.pyplot as plt
@@ -97,11 +97,11 @@ def save_artifacts(df: pd.DataFrame):
         plt.xticks(rotation=45, ha="right")
         plt.tight_layout()
         plt.savefig("output/ladepunkte_pro_bundesland_top10.png", dpi=150)
-        print("📈 Saved: output/ladepunkte_pro_bundesland_top10.png")
+        print("Saved: output/ladepunkte_pro_bundesland_top10.png")
 
 
 def main():
-    print("▶️ Lade CSV:", CSV_PATH)
+    print("Lade CSV:", CSV_PATH)
     df = load_raw_csv(CSV_PATH)
     print("Shape raw:", df.shape)
 
